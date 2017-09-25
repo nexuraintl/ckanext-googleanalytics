@@ -23,6 +23,7 @@ import hashlib
 import threading
 import Queue
 
+import helpers
 
 from ckanext.report.interfaces import IReport
 
@@ -125,6 +126,7 @@ class GoogleAnalyticsPlugin(p.SingletonPlugin):
     p.implements(p.IConfigurer, inherit=True)
     p.implements(p.ITemplateHelpers)
     p.implements(IReport)
+
 
     analytics_queue = Queue.Queue()
 
@@ -359,5 +361,11 @@ class GoogleAnalyticsPlugin(p.SingletonPlugin):
         """Register details of an extension's reports"""
         from ckanext.googleanalytics import reports
         return [reports.googleanalytics_dataset_report_info,reports.googleanalytics_resource_report_info]
+
+    def get_helpers(self):
+        return {
+            "get_visits_for_dataset": helpers.get_visits_for_dataset,
+            "get_visits_for_resource": helpers.get_visits_for_resource
+        }
 
 

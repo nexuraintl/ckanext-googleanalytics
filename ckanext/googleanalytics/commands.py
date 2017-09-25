@@ -17,6 +17,7 @@ DEFAULT_RESOURCE_URL_TAG = '/downloads/'
 RESOURCE_URL_REGEX = re.compile('/dataset/[a-z0-9-_]+/resource/([a-z0-9-_]+)')
 DATASET_EDIT_REGEX = re.compile('/dataset/edit/([a-z0-9-_]+)')
 
+log = logging.getLogger(__name__)
 
 
 class InitDB(CkanCommand):
@@ -105,15 +106,14 @@ class LoadAnalytics(CkanCommand):
                                  ).execute()
         return results    
           
-    def parse_and_save(self, args):
+    def parse_and_save(self):
         """Grab raw data from Google Analytics and save to the database"""
         from ga_auth import (init_service, get_profile_id)
-
-        if len(args) == 1:
+        if len(self.args) == 0:
             raise Exception("Missing token file")
-        tokenfile = args[1]
+        tokenfile = self.args[0]
         if not os.path.exists(tokenfile):
-            raise Exception('Cannot find the token file %s' % args[1])
+            raise Exception('Cannot find the token file %s' % self.args[1])
 
         try:
             self.service = init_service(self.args[0])
@@ -121,16 +121,16 @@ class LoadAnalytics(CkanCommand):
             raise Exception('Unable to create a service: {0}'.format(e))
 
         self.profile_id = get_profile_id(self.service)
-        if len(args) > 3:
+        if len(self.args) > 3:
             raise Exception('Too many arguments')
 
         given_start_date = None
-        if len(args) == 3:
-            given_start_date = datetime.datetime.strptime(args[2], '%Y-%m-%d').date()
+        if len(self.args) == 3:
+            given_start_date = datetime.datetime.strptime(self.args[2], '%Y-%m-%d').date()
       
         packages_data = self.get_ga_data(start_date=given_start_date)
         self.save_ga_data(packages_data)
-        self.log.info("Saved %s records from google" % len(packages_data))
+        log.info("Saved %s records from google" % len(packages_data))
 
     def save_ga_data(self, packages_data):
         """
@@ -144,7 +144,7 @@ class LoadAnalytics(CkanCommand):
                 resource = model.Session.query(model.Resource).autoflush(True)\
                            .filter_by(id=matches.group(1)).first()
                 if not resource:
-                    self.log.warning("Couldn't find resource %s" % resource_url)
+                    log.warning("Couldn't find resource %s" % resource_url)
                     continue
                 for visit_date, count in visits.iteritems():
                     ResourceStats.update_visits(resource.id, visit_date, count)
@@ -152,15 +152,15 @@ class LoadAnalytics(CkanCommand):
             else:
                 package_name = identifier[len(PACKAGE_URL):]
                 if "/" in package_name:
-                    self.log.warning("%s not a valid package name" % package_name)
+                    log.warning("%s not a valid package name" % package_name)
                     continue
                 item = model.Package.by_name(package_name)
                 if not item:
-                    self.log.warning("Couldn't find package %s" % package_name)
+                    log.warning("Couldn't find package %s" % package_name)
                     continue
                 for visit_date, count in visits.iteritems():
                     PackageStats.update_visits(item.id, visit_date, count)
-                    self.log.info("Updated %s with %s visits" % (item.id, count))
+                    log.info("Updated %s with %s visits" % (item.id, count))
         model.Session.commit()
 
     def get_ga_data(self, start_date=None):
