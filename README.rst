@@ -3,7 +3,7 @@ CKAN Google Analytics Extension
 
 **Status:** Production
 
-**CKAN Version:** >= 1.5.*
+**CKAN Version:** 2.x+
 
 A CKAN extension that both sends tracking data to Google Analytics and
 retrieves statistics from Google Analytics and inserts them into CKAN pages.
@@ -21,32 +21,22 @@ Features
 * Adds Google Analytics Event Tracking to some API calls so that usage of the
   API can be reported on via Google Analytics.
 
+
 * Add Google Analytics Event Tracking function that can be used in any exstension
   to create your custom events tracking.
 
   ``ckanext.googleanalytics.plugin._post_analytics``
+
 
 * Adds Google Analytics Event Tracking to group links on the home page,
   user profile links, editing and saving user profiles, etc.
 
   *Only if* ``googleanalytics.track_events = true`` *is in your CKAN ini file.*
 
-  *CKAN 1.x only*.
-
 * Puts download stats into dataset pages, e.g. "[downloaded 4 times]".
 
-  *CKAN 1.x only.*
-
-* Provides a ``/analytics/dataset/top`` page that shows the most popular
+* Provides a report page showing the most popular
   datasets and resources
-
-  *CKAN 1.x only*
-
-CKAN 1.x Support
-----------------
-
-To use ckanext-googleanalytics with CKAN 1.x, make sure you have
-``ckan.legacy_templates = true`` in your CKAN ini file.
 
 Installation
 ------------
@@ -55,8 +45,10 @@ Installation
 
     ::
 
+
     $ pip install -e  git+https://github.com/ckan/ckanext-googleanalytics.git#egg=ckanext-googleanalytics
     $ pip install -r ckanext-googleanalytics/requirements.txt
+
 
 2. Edit your development.ini (or similar) to provide these necessary parameters:
 
@@ -64,12 +56,7 @@ Installation
 
       googleanalytics.id = UA-1010101-1
       googleanalytics.account = Account name (i.e. data.gov.uk, see top level item at https://www.google.com/analytics)
-      googleanalytics.username = googleaccount@gmail.com
-      googleanalytics.password = googlepassword
-
-   Note that your password will probably be readable by other people;
-   so you may want to set up a new gmail account specifically for
-   accessing your gmail profile.
+      
 
 3. Edit again your configuration ini file to activate the plugin
    with:
@@ -81,13 +68,8 @@ Installation
    (If there are other plugins activated, add this to the list.  Each
    plugin should be separated with a space).
 
-4. If you are using this plugin with a version of CKAN < 2.0 then you should
-   also put the following in your ini file::
 
-       ckan.legacy_templates = true
-
-
-5. Finally, there are some optional configuration settings (shown here
+4. Finally, there are some optional configuration settings (shown here
    with their default settings)::
 
       googleanalytics_resource_prefix = /downloads/
@@ -104,13 +86,14 @@ Installation
    ``domain`` allows you to specify a domain against which Analytics
    will track users.  You will usually want to leave this as ``auto``;
    if you are tracking users from multiple subdomains, you might want
-   to specify something like ``.mydomain.com``.
+   to specify something like ``.mydomain.com``. If you set this to
+   ``request`` then dynamic HTTP_HOST value from CKAN is used.
    See `Google's documentation
    <http://code.google.com/apis/analytics/docs/gaJS/gaJSApiDomainDirectory.html#_gat.GA_Tracker_._setDomainName>`_
    for more info.
 
    If ``track_events`` is set, Google Analytics event tracking will be
-   enabled. *CKAN 1.x only.* *Note that event tracking for resource downloads
+   enabled. *Note that event tracking for resource downloads
    is always enabled,* ``track_events`` *enables event tracking for other
    pages as well.*
 
@@ -175,6 +158,7 @@ Authorization
 
 Before ckanext-googleanalytics can retrieve statistics from Google Analytics, you need to set up the OAUTH details which you can do by following the `instructions <https://developers.google.com/analytics/devguides/reporting/core/v3/quickstart/service-py>`_ the outcome of which will be a file with authentication key. These steps are below for convenience:
 
+
 1. Visit the `Google APIs Console <https://code.google.com/apis/console>`_
 
 2. Sign-in and create a project or use an existing project.
@@ -186,7 +170,6 @@ Before ckanext-googleanalytics can retrieve statistics from Google Analytics, yo
 5. Go to `GoogleAnalytics console <https://analytics.google.com/analytics/web/#management>`_ and chose ADMIN tab.
 
 6. Find "User management" button in corresponding column. Add service account using Service account ID(email) generated in 3rd step and grant "Read" role to it.
-
 
 Testing
 -------

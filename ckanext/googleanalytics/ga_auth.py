@@ -2,6 +2,7 @@ import httplib2
 from apiclient.discovery import build
 from oauth2client.service_account import ServiceAccountCredentials
 
+
 from pylons import config
 
 
@@ -15,6 +16,7 @@ def _prepare_credentials(credentials_filename):
         credentials_filename,
         scopes=scope
     )
+
     return credentials
 
 

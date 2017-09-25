@@ -8,7 +8,8 @@
   {% if googleanalytics_linked_domains %}
   ga('require', 'linker');
   ga('linker:autoLink', [{% for domain in googleanalytics_linked_domains %}'{{domain}}'{% if not loop.last %},{% endif %}{% endfor %}] );
-  {% endif %}   
+  {% endif %}
   ga('set', 'anonymizeIp', true);
   ga('send', 'pageview');
 </script>
+
