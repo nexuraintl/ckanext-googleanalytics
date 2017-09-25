@@ -319,7 +319,9 @@ class GoogleAnalyticsPlugin(p.SingletonPlugin):
         '''Return the CKAN 2.0 template helper functions this plugin provides.
         See ITemplateHelpers.
         '''
-        return {'googleanalytics_header': self.googleanalytics_header}
+        return {'googleanalytics_header': self.googleanalytics_header,
+                "get_visits_for_dataset": helpers.get_visits_for_dataset,
+                "get_visits_for_resource": helpers.get_visits_for_resource}
     
     def googleanalytics_header(self):
         '''Render the googleanalytics_header snippet for CKAN 2.0 templates.
@@ -362,10 +364,5 @@ class GoogleAnalyticsPlugin(p.SingletonPlugin):
         from ckanext.googleanalytics import reports
         return [reports.googleanalytics_dataset_report_info,reports.googleanalytics_resource_report_info]
 
-    def get_helpers(self):
-        return {
-            "get_visits_for_dataset": helpers.get_visits_for_dataset,
-            "get_visits_for_resource": helpers.get_visits_for_resource
-        }
 
 
