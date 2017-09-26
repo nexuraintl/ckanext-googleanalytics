@@ -130,6 +130,7 @@ class GoogleAnalyticsPlugin(p.SingletonPlugin, DefaultTranslation):
     p.implements(IReport)
     if toolkit.check_ckan_version(min_version='2.5.0'):
         p.implements(p.ITranslation, inherit=True)
+    p.implements(p.IActions, inherit=True)
 
 
     analytics_queue = Queue.Queue()
@@ -365,8 +366,17 @@ class GoogleAnalyticsPlugin(p.SingletonPlugin, DefaultTranslation):
 
     def register_reports(self):
         """Register details of an extension's reports"""
-        from ckanext.googleanalytics import reports
+        import reports
         return [reports.googleanalytics_dataset_report_info,reports.googleanalytics_resource_report_info]
+
+    # IActions
+
+    def get_actions(self):
+        from logic import get
+
+        return {
+            "most_visited_packages": get.most_visited_packages
+        }
 
 
 
