@@ -1,7 +1,9 @@
 
 {% set visits =  h.get_visits_for_resource(res.id) %}
 
+<div class="module module-narrow">
 <h2 class="module-heading">{{ _('Stats') }}</h2>
+    <section class="module-content">
 <span>{{ _('Last 30 days, updated daily') }}</span>
 <div id="chart_div"></div>
 
@@ -36,9 +38,12 @@
             vAxis: {
                 minValue: 4
             },
-            legend: { position: 'bottom' }
+            legend: { position: 'bottom' },
+            backgroundColor: 'transparent'
         };
         var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
         chart.draw(data, options);
     }
 </script>
+    </section>
+</div>

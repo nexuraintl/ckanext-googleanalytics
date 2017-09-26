@@ -1,11 +1,13 @@
 
-<div>
-    <h4 class="dataset-title sidebar-title">{{ _('Stats') }}</h4>
-    <span>{{ _('Last 30 days, updated daily') }}</span>
-    <div id="chart_div"></div>
-    {% set visits = h.get_visits_for_dataset(pkg.id) %}
-    <span>{{ _('All time visits:') }} {{ visits.count }}</span><br/>
-    <span>{{ _('All time downloads:') }} {{ visits.download_count }}</span>
+<div class="module module-narrow">
+    <h2 class="module-heading">{{ _('Stats') }}</h2>
+    <section class="module-content">
+
+        <span>{{ _('Last 30 days, updated daily') }}</span>
+        <div id="chart_div"></div>
+        {% set visits = h.get_visits_for_dataset(pkg.id) %}
+        <span>{{ _('All time visits:') }} {{ visits.count }}</span><br/>
+        <span>{{ _('All time downloads:') }} {{ visits.download_count }}</span>
     <script type="text/javascript"
             src="https://www.google.com/jsapi?autoload={
                           'modules':[{
@@ -35,10 +37,12 @@
                 vAxis: {
                     minValue: 4
                 },
-                legend: { position: 'bottom' }
+                legend: { position: 'bottom' },
+                backgroundColor: 'transparent'
             };
             var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
             chart.draw(data, options);
         }
     </script>
+    </section>
 </div>
