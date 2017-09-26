@@ -148,7 +148,7 @@ class LoadAnalytics(CkanCommand):
                     continue
                 for visit_date, count in visits.iteritems():
                     ResourceStats.update_visits(resource.id, visit_date, count)
-                    self.log.info("Updated %s with %s visits" % (resource.id, count))
+                    log.info("Updated %s with %s visits" % (resource.id, count))
             else:
                 package_name = identifier[len(PACKAGE_URL):]
                 if "/" in package_name:
