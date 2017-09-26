@@ -11,7 +11,7 @@ import pylons
 from ckan.lib.base import c
 import ckan.lib.helpers as h
 import ckan.plugins as p
-import gasnippet
+
 from routes.mapper import SubMapper, Mapper as _Mapper
 from pylons import config
 from ckan.controllers.package import PackageController
@@ -25,6 +25,7 @@ import Queue
 
 import helpers
 
+from ckan.plugins import toolkit
 from ckanext.report.interfaces import IReport
 
 
@@ -126,6 +127,8 @@ class GoogleAnalyticsPlugin(p.SingletonPlugin):
     p.implements(p.IConfigurer, inherit=True)
     p.implements(p.ITemplateHelpers)
     p.implements(IReport)
+    if toolkit.check_ckan_version(min_version='2.5.0'):
+        p.implements(p.ITranslation, inherit=True)
 
 
     analytics_queue = Queue.Queue()

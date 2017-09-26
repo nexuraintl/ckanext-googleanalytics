@@ -24,11 +24,20 @@ setup(
 	entry_points=\
 	"""
         [ckan.plugins]
-	# Add plugins here, eg
-	googleanalytics=ckanext.googleanalytics.plugin:GoogleAnalyticsPlugin
+		googleanalytics=ckanext.googleanalytics.plugin:GoogleAnalyticsPlugin
 
         [paste.paster_command]
         loadanalytics = ckanext.googleanalytics.commands:LoadAnalytics
         initdb = ckanext.googleanalytics.commands:InitDB
+        
+        [babel.extractors]
+        ckan = ckan.lib.extract:extract_ckan
 	""",
+	message_extractors={
+		'ckanext': [
+			('**.py', 'python', None),
+			('**.js', 'javascript', None),
+			('**/templates/**.html', 'ckan', None),
+		],
+	}
 )
