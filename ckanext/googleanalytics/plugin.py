@@ -26,6 +26,7 @@ import Queue
 import helpers
 
 from ckan.plugins import toolkit
+from ckan.lib.plugins import DefaultTranslation
 from ckanext.report.interfaces import IReport
 
 
@@ -120,7 +121,7 @@ class AnalyticsPostThread(threading.Thread):
             self.queue.task_done()
 
 
-class GoogleAnalyticsPlugin(p.SingletonPlugin):
+class GoogleAnalyticsPlugin(p.SingletonPlugin, DefaultTranslation):
 
     p.implements(p.IConfigurable, inherit=True)
     p.implements(p.IRoutes, inherit=True)
