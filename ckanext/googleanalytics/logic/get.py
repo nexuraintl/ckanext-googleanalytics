@@ -24,5 +24,6 @@ def most_visited_packages(context, data_dict):
         package_with_extras['visit_date'] = package['visit_date']
         packages.append(package_with_extras)
 
-    result['packages'] = packages
+    from operator import itemgetter
+    result['packages'] = sorted(packages, key=itemgetter('visits'), reverse=True)
     return result
