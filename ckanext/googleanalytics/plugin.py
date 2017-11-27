@@ -81,7 +81,10 @@ class AnalyticsPostThread(threading.Thread):
     def run(self):
         while True:
             # grabs host from queue
-            data_dict = self.queue.get()
+            try:
+                data_dict = self.queue.get(block=True, timeout=5)
+            except Queue.Empty:
+                break
 
             data = urllib.urlencode(data_dict)
             log.debug("Sending API event to Google Analytics: " + data)
@@ -96,29 +99,7 @@ class AnalyticsPostThread(threading.Thread):
             # signals to queue job is done
             self.queue.task_done()
 
-class AnalyticsPostThread(threading.Thread):
-    """Threaded Url POST"""
-    def __init__(self, queue):
-        threading.Thread.__init__(self)
-        self.queue = queue
 
-    def run(self):
-        while True:
-            # grabs host from queue
-            data_dict = self.queue.get()
-
-            data = urllib.urlencode(data_dict)
-            log.debug("Sending API event to Google Analytics: " + data)
-            # send analytics
-            urllib2.urlopen(
-                "http://www.google-analytics.com/collect",
-                data,
-                # timeout in seconds
-                # https://docs.python.org/2/library/urllib2.html#urllib2.urlopen
-                10)
-
-            # signals to queue job is done
-            self.queue.task_done()
 
 
 class GoogleAnalyticsPlugin(p.SingletonPlugin, DefaultTranslation):
@@ -192,64 +173,6 @@ class GoogleAnalyticsPlugin(p.SingletonPlugin, DefaultTranslation):
 
     def update_config(self, config):
         p.toolkit.add_template_directory(config, 'templates')
-
-    def before_map(self, map):
-        '''Add new routes that this extension's controllers handle.
-        
-        See IRoutes.
-
-        '''
-        # Helpers to reduce code clutter
-        GET = dict(method=['GET'])
-        PUT = dict(method=['PUT'])
-        POST = dict(method=['POST'])
-        DELETE = dict(method=['DELETE'])
-        GET_POST = dict(method=['GET', 'POST'])
-        # intercept API calls that we want to capture analytics on
-        register_list = [
-            'package',
-            'dataset',
-            'resource',
-            'tag',
-            'group',
-            'related',
-            'revision',
-            'licenses',
-            'rating',
-            'user',
-            'activity'
-        ]
-        register_list_str = '|'.join(register_list)
-        # /api ver 3 or none
-        with SubMapper(map, controller='ckanext.googleanalytics.controller:GAApiController', path_prefix='/api{ver:/3|}',
-                    ver='/3') as m:
-            m.connect('/action/{logic_function}', action='action',
-                      conditions=GET_POST)
-
-        # /api ver 1, 2, 3 or none
-        with SubMapper(map, controller='ckanext.googleanalytics.controller:GAApiController', path_prefix='/api{ver:/1|/2|/3|}',
-                       ver='/1') as m:
-            m.connect('/search/{register}', action='search')
-
-        # /api/rest ver 1, 2 or none
-        with SubMapper(map, controller='ckanext.googleanalytics.controller:GAApiController', path_prefix='/api{ver:/1|/2|}',
-                       ver='/1', requirements=dict(register=register_list_str)
-                       ) as m:
-
-            m.connect('/rest/{register}', action='list', conditions=GET)
-            m.connect('/rest/{register}', action='create', conditions=POST)
-            m.connect('/rest/{register}/{id}', action='show', conditions=GET)
-            m.connect('/rest/{register}/{id}', action='update', conditions=PUT)
-            m.connect('/rest/{register}/{id}', action='update', conditions=POST)
-            m.connect('/rest/{register}/{id}', action='delete', conditions=DELETE)
-
-        with SubMapper(map, controller='ckanext.googleanalytics.controller:GAResourceController') as m:
-            m.connect('/dataset/{id}/resource/{resource_id}/download',
-                    action='resource_download')
-            m.connect('/dataset/{id}/resource/{resource_id}/download/{filename}',
-                    action='resource_download')
-            
-        return map
 
     def before_map(self, map):
         '''Add new routes that this extension's controllers handle.
