@@ -1,5 +1,8 @@
-{% ckan_extends %}}
+{% ckan_extends %}
 
-{% block stats %}
-{% snippet "googleanalytics/snippets/dataset_stats.html", pkg=pkg %}
+{% block package_info %}
+    {{ super() }}
+    {% block stats %}
+        {% snippet "googleanalytics/snippets/dataset_stats.html", pkg=pkg %}
+    {% endblock %}
 {% endblock %}
