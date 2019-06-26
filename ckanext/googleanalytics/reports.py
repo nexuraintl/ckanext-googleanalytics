@@ -1,5 +1,5 @@
-from ckan.common import OrderedDict
-from ckanext.googleanalytics.model import PackageStats,ResourceStats
+from ckan.common import OrderedDict, _, ungettext
+from ckanext.googleanalytics.model import PackageStats, ResourceStats
 
 
 def google_analytics_dataset_report(last):
@@ -13,6 +13,7 @@ def google_analytics_dataset_report(last):
         'table' : top_packages.get("packages")
     }
 
+
 def google_analytics_dataset_option_combinations():
     options = [20,25,30,35,40,45,50]
     for option in options:
@@ -20,8 +21,8 @@ def google_analytics_dataset_option_combinations():
 
 googleanalytics_dataset_report_info = {
     'name': 'google-analytics-dataset',
-    'title': 'Most popular datasets',
-    'description': 'Google analytics showing top datasets with most views',
+    'title': _('Most popular datasets'),
+    'description': _('Google analytics showing top datasets with most views'),
     'option_defaults': OrderedDict((('last',20),)),
     'option_combinations': google_analytics_dataset_option_combinations,
     'generate': google_analytics_dataset_report,
@@ -40,15 +41,17 @@ def google_analytics_resource_report(last):
         'table' : top_resources.get("resources")
     }
 
+
 def google_analytics_resource_option_combinations():
     options = [20,25,30,35,40,45,50]
     for option in options:
         yield { 'last': option }
 
+
 googleanalytics_resource_report_info = {
     'name': 'google-analytics-resource',
-    'title': 'Most popular resources',
-    'description': 'Google analytics showing most downloaded resources',
+    'title': _('Most popular resources'),
+    'description': _('Google analytics showing most downloaded resources'),
     'option_defaults': OrderedDict((('last',20),)),
     'option_combinations': google_analytics_resource_option_combinations,
     'generate': google_analytics_resource_report,

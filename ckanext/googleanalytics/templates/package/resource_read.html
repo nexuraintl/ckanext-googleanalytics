@@ -1,5 +1,8 @@
 {% ckan_extends %}
 
-{% block stats %}
-{% snippet "googleanalytics/snippets/resource_stats.html", res=res %}
+{% block resource_additional_information %}
+    {% block stats %}
+        {% snippet "googleanalytics/snippets/resource_stats.html", res=res %}
+    {% endblock %}
+    {{ super() }}
 {% endblock %}
